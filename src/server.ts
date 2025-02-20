@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import { addTransaction, deleteTransaction, getTransactions } from './controllers/TransactionController.js';
+import { EXPENSE_CATEGORY } from './enums.js';
 
 dotenv.config();
 
@@ -15,6 +16,10 @@ mongoose.connection.once('open', () => console.log('Database connected.'));
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.listen(process.env.PORT, () => { console.log(`Server listening on port ${process.env.PORT}`) });
+
+// ROUTES
+app.get('/', async (_req, res) => { res.send('Expense Tracking App Server') })
 
 app.get('/transactions', async (_req, res) => {
   try {
@@ -48,6 +53,7 @@ app.delete('/transactions/:transactionId', async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server listening on port ${process.env.PORT}`);
-})
+app.get('/transactions/categories', async (_req, res) => {
+  res.json(Object.values(EXPENSE_CATEGORY));
+});
+
