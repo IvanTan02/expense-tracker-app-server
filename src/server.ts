@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import { addTransaction, deleteTransaction, getTransactions } from './controllers/TransactionController.js';
+import { addTransaction, deleteTransaction, getTransactions, updateTransaction } from './controllers/TransactionController.js';
 import { EXPENSE_CATEGORY } from './enums.js';
 
 dotenv.config();
@@ -39,6 +39,18 @@ app.post('/transactions', async (req, res) => {
   } catch (err) {
     console.error('Error adding transaction:', err.message);
     res.status(500).send('Error adding transaction');
+  }
+});
+
+app.post('/transactions/:transactionId', async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    if (!transactionId) throw new Error('Invalid or null transactionId');
+    await updateTransaction(transactionId, req.body);
+    res.status(200).json('Transaction updated successfully.');
+  } catch (err) {
+    console.error('Error updating transaction:', err.message);
+    res.status(500).send('Error updating transaction');
   }
 });
 
